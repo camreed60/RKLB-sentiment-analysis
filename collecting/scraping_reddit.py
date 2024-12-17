@@ -86,7 +86,7 @@ if __name__ == "__main__":
     reddit = authenticate_reddit()
 
     # List of subreddits we are concerned about
-    subreddits = ["WallStreetBets", "RKLB", "RocketLab", "stocks", "SpaceXMasterrace"]
+    subreddits = ["WallStreetBets", "RKLB", "RocketLab", "stocks", "SpaceXMasterrace", "investing", "SpaceX", "SmallStreetBets"]
 
     # Collect data from each subreddit and save to csv
     for subreddit in subreddits:

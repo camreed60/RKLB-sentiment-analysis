@@ -4,11 +4,19 @@ import os
 
 # Authenticate to Reddit
 def authenticate_reddit():
-    reddit = praw.Reddit(
-        client_id = "fQDkZ8adjzphnERTn1Fb3g", # Delete before upload
-        client_secret = "kp6jmowegNpxgfiqUNcSiJIGc51DHQ", # Delete before upload
-        user_agent = "sentiment_analysis:v1.0 (by /u/Electrical_Mine_7039)" # Delete before upload
-    )
+    try:
+        reddit = praw.Reddit(
+            client_id = "fQDkZ8adjzphnERTn1Fb3g", # Delete before upload
+            client_secret = "kp6jmowegNpxgfiqUNcSiJIGc51DHQ", # Delete before upload
+            user_agent = "sentiment_analysis:v1.0 (by /u/Electrical_Mine_7039)" # Delete before upload
+        )
+
+    # Test authentication by checking if the Reddit instance is valid
+        print("Authenticated as:", reddit.user.me())  # Should print your Reddit username if successful
+        return reddit
+    except Exception as e:
+        print("Error during Reddit authentication:", e)
+        return None  # Return None if authentication fails
 
 # Fetch posts from WallStreetBets and RKLB
 def fetch_reddit_data(reddit, subreddit_name, limit=100, filename="reddit_data.csv"):

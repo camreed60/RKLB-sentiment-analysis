@@ -23,9 +23,26 @@ def fetch_reddit_data(reddit, subreddit_name, limit=1000, filename="reddit_data.
     subreddit = reddit.subreddit(subreddit_name)
     posts_data = []
 
-     # Keywords related to RKLB
-    relevant_keywords = ['RKLB', 'Rocket Lab', 'rocketlab', 'rocket labs', 'rocketlabs', 'rklb'
-                         'Rocket lab', 'Rocket labs']
+    # Keywords related to RKLB
+    relevant_keywords = [
+        'RKLB', 'Rocket Lab', 'rocketlab', 'rocket labs', 'rocketlabs', 'rklb', 
+        'Rocket lab', 'Rocket labs', 'rocket lab usa', 'rocket lab space', 
+        'Rocket Lab USA', 'rocket lab stock', 'rocket lab news', 'rocket lab launch', 
+        'rocket lab shares', 'rocket lab updates', 'rocket lab earnings', 
+        'rocket lab missions', 'Electron rocket', 'rocket lab Electron', 
+        'Electron launch', 'Neutron rocket', 'rocket lab Neutron', 
+        'rocket lab spacecraft', 'rocket lab satellites', 'rocket lab orbit', 
+        'rocket lab booster', 'rocket lab reusability', 'RKLB stock', 'RKLB news', 
+        'RKLB earnings', 'RKLB updates', 'RKLB share price', 'RKLB forecast', 
+        'RKLB analysis', 'RKLB valuation', 'rocket lab investor', 'rocket lab financials', 
+        'rocket lab NASDAQ', 'NASDAQ RKLB', 'rocket lab orbital launch', 
+        'Rocket Lab space systems', 'Rocket Lab recovery', 'Rocket Lab Photon', 
+        'Photon satellite', 'Rocket Lab technology', 'rocket lab space services',
+        'rocket lab manufacturing', 'RKLB space', 'RKLB launch', 'RKLB mission', 
+        'RKLB reusability', 'rocket lab propulsion', 'RKLB market', 'rocket lab future',
+        'rocket lab partnerships', 'rocket lab success', 'rocket lab growth'
+    ]
+
 
     # Fetch hot posts
     for post in subreddit.hot(limit=limit):

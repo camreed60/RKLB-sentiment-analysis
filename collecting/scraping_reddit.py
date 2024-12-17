@@ -12,7 +12,7 @@ def authenticate_reddit():
         )
 
     # Test authentication by checking if the Reddit instance is valid
-        print("Authenticated as:", reddit.user.me())  # Should print your Reddit username if successful
+        print("Authenticated as:", reddit.user.me()) 
         return reddit
     except Exception as e:
         print("Error during Reddit authentication:", e)
@@ -24,7 +24,8 @@ def fetch_reddit_data(reddit, subreddit_name, limit=1000, filename="reddit_data.
     posts_data = []
 
      # Keywords related to RKLB
-    relevant_keywords = ['RKLB', 'Rocket Lab', 'rocketlab']
+    relevant_keywords = ['RKLB', 'Rocket Lab', 'rocketlab', 'rocket labs', 'rocketlabs', 'rklb'
+                         'Rocket lab', 'Rocket labs']
 
     # Fetch hot posts
     for post in subreddit.hot(limit=limit):

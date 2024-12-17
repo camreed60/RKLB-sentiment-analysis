@@ -12,7 +12,7 @@ def authenticate_reddit():
         )
 
     # Test authentication by checking if the Reddit instance is valid
-        print("Authenticated as:", reddit.user.me()) 
+        print("Authentication successful") 
         return reddit
     except Exception as e:
         print("Error during Reddit authentication:", e)
@@ -44,18 +44,28 @@ def fetch_reddit_data(reddit, subreddit_name, limit=1000, filename="reddit_data.
     ]
 
 
-    # Fetch hot posts
-    for post in subreddit.hot(limit=limit):
-        # Filter posts that contain relevant keywords in the title or selftext
-        if any(keyword.lower() in post.title.lower() for keyword in relevant_keywords) or \
-           any(keyword.lower() in post.selftext.lower() for keyword in relevant_keywords):
-            posts_data.append({
-                'title': post.title,
-                'selftext': post.selftext,
-                'score': post.score,
-                'num_comments': post.num_comments,
-                'url': post.url
-            })
+    # Define the sorting methods to be used
+    sorting_methods = {
+        "hot": subreddit.hot(limit=limit),
+        "new": subreddit.new(limit=limit),
+        "top": subreddit.top(limit=limit),
+        "controversial": subreddit.controversial(limit=limit)
+    }
+
+    # Fetch posts from each sorting method
+    for sorting_method, posts in sorting_methods.items():
+        print(f"Fetching {sorting_method} posts from {subreddit_name}...")
+        for post in posts:
+            # Filter posts that contain relevant keywords in the title or selftext
+            if any(keyword.lower() in post.title.lower() for keyword in relevant_keywords) or \
+            any(keyword.lower() in post.selftext.lower() for keyword in relevant_keywords):
+                posts_data.append({
+                    'title': post.title,
+                    'selftext': post.selftext,
+                    'score': post.score,
+                    'num_comments': post.num_comments,
+                    'url': post.url
+                })
     
     # If no relevant posts were found
     if not posts_data:

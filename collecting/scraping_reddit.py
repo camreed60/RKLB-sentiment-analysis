@@ -19,19 +19,30 @@ def authenticate_reddit():
         return None  # Return None if authentication fails
 
 # Fetch posts from WallStreetBets and RKLB
-def fetch_reddit_data(reddit, subreddit_name, limit=100, filename="reddit_data.csv"):
+def fetch_reddit_data(reddit, subreddit_name, limit=1000, filename="reddit_data.csv"):
     subreddit = reddit.subreddit(subreddit_name)
     posts_data = []
 
-    # Fetch 'hot' posts
+     # Keywords related to RKLB
+    relevant_keywords = ['RKLB', 'Rocket Lab', 'rocketlab']
+
+    # Fetch hot posts
     for post in subreddit.hot(limit=limit):
-        posts_data.append({
-            'title': post.title,
-            'selftext': post.selftext,
-            'score': post.score,
-            'num_comments': post.num_comments,
-            'url': post.url
-        })
+        # Filter posts that contain relevant keywords in the title or selftext
+        if any(keyword.lower() in post.title.lower() for keyword in relevant_keywords) or \
+           any(keyword.lower() in post.selftext.lower() for keyword in relevant_keywords):
+            posts_data.append({
+                'title': post.title,
+                'selftext': post.selftext,
+                'score': post.score,
+                'num_comments': post.num_comments,
+                'url': post.url
+            })
+    
+    # If no relevant posts were found
+    if not posts_data:
+        print(f"No relevant posts found in {subreddit_name}.")
+        return None
 
     # Create a data frame
     df = pd.DataFrame(posts_data)
@@ -57,7 +68,7 @@ if __name__ == "__main__":
     reddit = authenticate_reddit()
 
     # List of subreddits we are concerned about
-    subreddits = ["WallStreetBets", "RKLB"]
+    subreddits = ["WallStreetBets", "RKLB", "RocketLab", "stocks", "SpaceXMasterrace"]
 
     # Collect data from each subreddit and save to csv
     for subreddit in subreddits:

@@ -1,12 +1,6 @@
 import tweepy
 import pandas as pd
 
-# Twitter API credentials (use Bearer Token for v2)
-# Twitter API credentials
-# consumer_key = 'L0Jl7Lo3StQchan4sM80sSrC7'
-# consumer_secret = 'OzLQI0UG4TIa557ecl2tmnBPxUOcATuPuEc8AC5BlKrIgMIeTk'
-# bearer_token = '1868694866126913541-jiMEkCTr5khrw7J81FljuBiPHfZlnX'
-# access_token_secret = '5hQOEmfiW84wylPYtZTEKDZWcfmUYDfe6qri33fSuJLhF'
 
 bearer_token = "AAAAAAAAAAAAAAAAAAAAADFVxgEAAAAA%2BdXfiB6sZifsOJCR9fCr2%2F%2BBqao%3D1pCK48kWE7bgr8VB7VauMIAzP51nVgdaghuwjIrfZNvoyJ91GC"
 
@@ -15,7 +9,8 @@ client = tweepy.Client(bearer_token=bearer_token)
 
 # Function to fetch tweets using Twitter v2 API
 def fetch_tweets_v2(query, max_results=50):
-    """Fetch tweets based on a query using Twitter API v2."""
+    # Fetch tweets based on a query using Twitter API v2.
+    
     try:
         # Fetch recent tweets with necessary fields
         response = client.search_recent_tweets(
@@ -53,7 +48,7 @@ def fetch_tweets_v2(query, max_results=50):
 
 # Fetch tweets for #RKLB using API v2
 query = "#RKLB lang:en"  # Adding 'lang:en' to the query ensures English tweets
-tweets_data = fetch_tweets_v2(query, max_results=100)
+tweets_data = fetch_tweets_v2(query, max_results=50)
 
 # Save the raw data to a clean CSV file
 if tweets_data:
@@ -65,6 +60,7 @@ if tweets_data:
         encoding="utf-8",     # Standard UTF-8 encoding
         quoting=1             # Quote all fields to handle special characters like commas
     )
+    
     print("Tweets saved to rklb_raw_tweets_v2.csv")
 else:
     print("No tweets fetched.")

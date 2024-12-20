@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 from datetime import datetime
+import os
 
 # API Details (Delete before publishing)
 API_KEY = "eecdfdfa23a8427b91a157a0edc779c8"
@@ -35,8 +36,16 @@ def fetch_articles(params):
     
 articles = fetch_articles(params)
 
-# Save to csv 
-df = pd.DataFrame(articles)
-df.to_csv("rklb_newsapi_articles.csv", index=False)
+# Save to CSV in the correct directory
+if articles:
+    df = pd.DataFrame(articles)
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    data_directory = os.path.join(current_directory, "..", "data", "raw_data", "newsapi_data")
+    os.makedirs(data_directory, exist_ok=True)
+    file_path = os.path.join(data_directory, "rklb_newsapi_articles.csv")
+    df.to_csv(file_path, index=False)
+    print(f"Collected {len(articles)} articles and saved to {file_path}")
+else:
+    print("No articles were collected.")
 
-print(f"Collected {len(articles)} articles")
+# Saves as source, author, title, description, url, urlToImage, publishedAt, content

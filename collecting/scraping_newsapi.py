@@ -9,8 +9,8 @@ BASE_URL = "https://newsapi.org/v2/everything"
 
 params = {
     "q": "Rocket Lab", # Search query
-    "from": "2024-11-20", # Start date
-    "to": "2024-12-19", # end date
+    "from": "2024-11-21", # Start date
+    "to": "2024-12-20", # end date
     "language": "en", # language
     "sortBy": "relevancy", # Sorting param
     "pageSize": 100, # Max articles per page

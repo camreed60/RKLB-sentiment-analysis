@@ -8,16 +8,14 @@ clean_data_dir = '/home/cam/Desktop/personal-projects/RKLB-sentiment-analysis/da
 
 
 def clean_text(text):
-    try:
-        if not isinstance(text, str) or text.strip() == '':
-            return ''
-        text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
-        text = re.sub(r'\s+', ' ', text).strip()
-        return text.lower()
-    except Exception as e:
-        print(f"Error cleaning text: {e}")
-        return ''
-
+    """
+    Cleans the input text by removing special characters, extra spaces, and converting to lowercase.
+    """
+    if not isinstance(text, str):  # Ensure the input is a string
+        return text
+    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)  # Remove special characters
+    text = re.sub(r'\s+', ' ', text).strip()    # Remove extra spaces
+    return text.lower()  # Convert to lowercase
 
 def clean_reddit_data(file_path, output_dir):
     try:

@@ -40,6 +40,9 @@ df['Cleaned_Text'] = df['Article_Text'].apply(lambda x: preprocess_text(x, max_t
 # Remove rows where Cleaned_Title or Cleaned_Text is null
 df = df.dropna(subset=['Cleaned_Title', 'Cleaned_Text'])
 
+# Remove duplicate rows based on Cleaned_Title and Cleaned_Text
+df = df.drop_duplicates(subset=['Cleaned_Title', 'Cleaned_Text'])
+
 # Save the preprocessed data to a new CSV
 df[['Cleaned_Title', 'Cleaned_Text']].to_csv('cleaned_yfinance_data.csv', index=False)
 

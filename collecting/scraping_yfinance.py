@@ -18,11 +18,13 @@ df = pd.read_csv('data/raw_data/yfinance_data/RKLB_news_links.csv')
 col_name = 'Link'
 article_links = df[col_name]
 
-# List to store raw text data from articles
+# Lists to store raw text data and titles from articles
 output_article_text = []
+output_article_titles = []
 
 # Constants
 P_CLASS = "yf-1pe5jgt"
+TITLE_CLASS = "cover-title yf-1at0uqp"
 MAX_RETRIES = 3
 DELAY = 2  # Delay in seconds between retries
 
@@ -36,6 +38,7 @@ headers = {
 
 for link in article_links:
     article_text = None
+    article_title = None
     for attempt in range(MAX_RETRIES):
         try:
             # Ensuring we get status 200 for a link
@@ -51,6 +54,10 @@ for link in article_links:
             # Extract and join the text from all paragraphs in article
             article_text = ' '.join(p.get_text(strip=True) for p in paragraphs)
 
+            # Finding the title using the specified class
+            title_div = soup.find('div', class_=TITLE_CLASS)
+            article_title = title_div.get_text(strip=True) if title_div else None
+
             # Increment success counter and exit retry loop
             success_counter += 1
             print(f"Success scraping: {link}")
@@ -61,12 +68,17 @@ for link in article_links:
             if attempt < MAX_RETRIES - 1:
                 time.sleep(DELAY * (attempt + 1))  # Exponential backoff delay
 
-    # Append scraped text or None if failed
+    # Append scraped text and title (or None if failed)
     output_article_text.append(article_text)
+    output_article_titles.append(article_title)
 
 # Save the scraped data to a new CSV
-output_df = pd.DataFrame({"Link": article_links, "Article_Text": output_article_text})
-output_df.to_csv('articles_raw_text.csv', index=False)
+output_df = pd.DataFrame({
+    "Link": article_links,
+    "Title": output_article_titles,
+    "Article_Text": output_article_text
+})
+output_df.to_csv('articles_with_titles.csv', index=False)
 
 # Print the number of successful scrapes
 print(f"Scraping complete. Total successful scrapes: {success_counter}/{len(article_links)}")

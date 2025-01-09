@@ -1,53 +1,84 @@
 import pandas as pd
-import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 import os
+import nltk
+
+# Download VADER 
+nltk.download('vader_lexicon')
 
 # Initialize VADER
-nltk.download('vader_lexicon')
-sid = SentimentIntensityAnalyzer()
+vader_analyzer = SentimentIntensityAnalyzer()
 
-# Path to the cleaned Reddit data directory
+# Load FinBERT model and tokenizer
+finbert_model = AutoModelForSequenceClassification.from_pretrained("yiyanghkust/finbert-tone")
+finbert_tokenizer = AutoTokenizer.from_pretrained("yiyanghkust/finbert-tone")
+finbert_analyzer = pipeline("sentiment-analysis", model=finbert_model, tokenizer=finbert_tokenizer)
+
+# Paths
 reddit_data_dir = './data/clean_data/reddit_data'
-output_file = './data/sentiment_scores/reddit_vader_sentiment.csv'
+vader_output_file = './data/sentiment_scores/reddit_vader_sentiment.csv'
+finbert_output_file = './data/sentiment_scores/reddit_finbert_sentiment.csv'
 
-# Initialize a list to store sentiment scores
-sentiment_data = []
+# Function to truncate text to fit within FinBERT's 512-token limit
+def truncate_text(text, tokenizer, max_length=510):
+    tokens = tokenizer.tokenize(text)
+    if len(tokens) > max_length:
+        # Truncate tokens and convert back to string
+        truncated_tokens = tokens[:max_length]
+        return tokenizer.convert_tokens_to_string(truncated_tokens)
+    return text
 
-# Process each subreddit CSV
+# Process VADER and FinBERT Sentiment Analysis
+vader_sentiment_data = []
+finbert_sentiment_data = []
+
 for file_name in os.listdir(reddit_data_dir):
     if file_name.endswith('.csv'):
         file_path = os.path.join(reddit_data_dir, file_name)
         # Read the subreddit CSV
         df = pd.read_csv(file_path)
 
-        # Apply VADER 
+        # Apply sentiment analysis on each row
         for _, row in df.iterrows():
-            title = row['cleaned_title'] if pd.notnull(row['cleaned_title']) else ''
-            selftext = row['cleaned_selftext'] if pd.notnull(row['cleaned_selftext']) else ''
+            # Use cleaned text directly and truncate if necessary
+            text = f"{row['cleaned_title']} {row['cleaned_selftext']}".strip()
+            truncated_text = truncate_text(text, finbert_tokenizer)
 
-            # Combine title and selftext for sentiment analysis
-            text = f"{title} {selftext}"
-
-            # Get sentiment scores
-            sentiment = sid.polarity_scores(text)
-
-            # Append results with additional metadata
-            sentiment_data.append({
+            # VADER sentiment analysis
+            vader_scores = vader_analyzer.polarity_scores(text)
+            vader_sentiment_data.append({
                 'subreddit_file': file_name,
                 'title': row['title'],
                 'selftext': row['selftext'],
                 'score': row['score'],
                 'num_comments': row['num_comments'],
                 'url': row['url'],
-                'compound': sentiment['compound'],
-                'positive': sentiment['pos'],
-                'neutral': sentiment['neu'],
-                'negative': sentiment['neg']
+                'compound': vader_scores['compound'],
+                'positive': vader_scores['pos'],
+                'neutral': vader_scores['neu'],
+                'negative': vader_scores['neg']
             })
 
-# Save sentiment scores to a CSV
-sentiment_df = pd.DataFrame(sentiment_data)
-sentiment_df.to_csv(output_file, index=False)
+            # FinBERT sentiment analysis
+            finbert_result = finbert_analyzer(truncated_text)[0]
+            finbert_sentiment_data.append({
+                'subreddit_file': file_name,
+                'title': row['title'],
+                'selftext': row['selftext'],
+                'score': row['score'],
+                'num_comments': row['num_comments'],
+                'url': row['url'],
+                'label': finbert_result['label'],
+                'score': finbert_result['score']
+            })
 
-print(f"Sentiment analysis completed. Results saved to {output_file}")
+# Save VADER sentiment scores
+vader_df = pd.DataFrame(vader_sentiment_data)
+vader_df.to_csv(vader_output_file, index=False)
+print(f"VADER sentiment analysis completed. Results saved to {vader_output_file}")
+
+# Save FinBERT sentiment scores
+finbert_df = pd.DataFrame(finbert_sentiment_data)
+finbert_df.to_csv(finbert_output_file, index=False)
+print(f"FinBERT sentiment analysis completed. Results saved to {finbert_output_file}")

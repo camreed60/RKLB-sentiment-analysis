@@ -1,4 +1,4 @@
-subreddit_file,title,selftext,score,num_comments,url,label,Post_Length
+subreddit_file,title,selftext,score,num_comments,url,label,length
 RKLB_posts.csv,Neutron Launch Pad,source: rocket lab’s instagram,0.9996998310089111,48,https://www.reddit.com/gallery/1hf1g2g,Neutral,28
 RKLB_posts.csv,Does Peter Beck or Adam Spice own other stocks besides RKLB?,Have they ever talked about this?,0.9983526468276978,9,https://www.reddit.com/r/RKLB/comments/1hf347l/does_peter_beck_or_adam_spice_own_other_stocks/,Neutral,32
 RKLB_posts.csv,Jared Isaacman Embry Riddle Graduation Ceremony 2024,"Mentions Rocket Lab twice. Also, if anyone has doubts about where the space sector is heading going in the very near future, this speech should help quell them. The space sector is primed to soar, and this guy as NASA head is going to be the catalyst for that. ",0.9998594522476196,4,https://m.youtube.com/watch?v=799YrqxVc6E,Positive,254

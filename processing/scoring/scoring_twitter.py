@@ -20,6 +20,7 @@ def vader_sentiment_score(sentence):
 
 # Lists to store VADER sentiment data
 vader_titles = []
+vadar_entry_length = []
 compound_scores = []
 positive_scores = []
 neutral_scores = []
@@ -30,6 +31,7 @@ vader_overall_rated = []
 for title, text in zip(date_tweeted_col, sentence_col):
     sentiment_data = vader_sentiment_score(text)
     vader_titles.append(title)
+    vadar_entry_length.append(len(text))
     compound_scores.append(sentiment_data['compound'])
     positive_scores.append(sentiment_data['pos'])
     neutral_scores.append(sentiment_data['neu'])
@@ -46,6 +48,7 @@ for title, text in zip(date_tweeted_col, sentence_col):
 # Create a new DataFrame for VADER results
 vader_sentiment_df = pd.DataFrame({
     'Title': vader_titles,
+    'Tweet_Length': vadar_entry_length,
     'Compound_Score': compound_scores,
     'Positive_Score': positive_scores,
     'Neutral_Score': neutral_scores,
@@ -70,6 +73,7 @@ def finbert_sentiment_score(sentence):
 
 # Lists to store FinBERT sentiment data
 finbert_titles = []
+finbert_tweet_length = []
 finbert_overall_rated = []
 finbert_scores = []
 
@@ -77,12 +81,14 @@ finbert_scores = []
 for title, text in zip(date_tweeted_col, sentence_col):
     sentiment_data = finbert_sentiment_score(text)
     finbert_titles.append(title)
+    finbert_tweet_length.append(len(text))
     finbert_overall_rated.append(sentiment_data['label'])  # Sentiment label
     finbert_scores.append(sentiment_data['score'])  # Confidence score
 
 # Create a new DataFrame for FinBERT results
 finbert_sentiment_df = pd.DataFrame({
     'Title': finbert_titles,
+    'Tweet_Length': finbert_tweet_length,
     'Overall_Rated': finbert_overall_rated,
     'Confidence_Score': finbert_scores
 })

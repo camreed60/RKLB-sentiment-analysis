@@ -22,6 +22,7 @@ def finbert_sentiment_score(sentence):
 
 # Lists to store FinBERT sentiment data
 finbert_titles = []
+finbert_entry_length = []
 finbert_overall_rated = []
 finbert_scores = []
 
@@ -29,18 +30,20 @@ finbert_scores = []
 for title, text in zip(article_titles_col, article_texts_col):
     sentiment_data = finbert_sentiment_score(text)
     finbert_titles.append(title)
+    finbert_entry_length.append(len(text))
     finbert_overall_rated.append(sentiment_data['label'])  # Sentiment label
     finbert_scores.append(sentiment_data['score'])  # Confidence score
 
 # Create a new DataFrame for FinBERT results
 finbert_sentiment_df = pd.DataFrame({
     'Title': finbert_titles,
+    'Article_Length': finbert_entry_length,
     'Overall_Rated': finbert_overall_rated,
     'Confidence_Score': finbert_scores
 })
 
 # Save FinBERT results to a CSV
-finbert_sentiment_df.to_csv('data/sentiment_data/yfinance_finbert_sentiment.csv', index=False)
+finbert_sentiment_df.to_csv('yfinance_finbert_sentiment.csv', index=False)
 print('FinBERT sentiment analysis completed successfully.')
 
 ### VADER Sentiment Analysis ###
@@ -54,6 +57,7 @@ def vader_sentiment_score(sentence):
 
 # Lists to store VADER sentiment data
 vader_titles = []
+vader_entry_length = []
 compound_scores = []
 positive_scores = []
 neutral_scores = []
@@ -64,6 +68,7 @@ vader_overall_rated = []
 for title, text in zip(article_titles_col, article_texts_col):
     sentiment_data = vader_sentiment_score(text)
     vader_titles.append(title)
+    vader_entry_length.append(len(text))
     compound_scores.append(sentiment_data['compound'])
     positive_scores.append(sentiment_data['pos'])
     neutral_scores.append(sentiment_data['neu'])
@@ -80,6 +85,7 @@ for title, text in zip(article_titles_col, article_texts_col):
 # Create a new DataFrame for VADER results
 vader_sentiment_df = pd.DataFrame({
     'Title': vader_titles,
+    'Article_Length': vader_entry_length,
     'Compound_Score': compound_scores,
     'Positive_Score': positive_scores,
     'Neutral_Score': neutral_scores,
@@ -88,5 +94,5 @@ vader_sentiment_df = pd.DataFrame({
 })
 
 # Save VADER results to a CSV
-vader_sentiment_df.to_csv('data/sentiment_data/yfinance_vader_sentiment.csv', index=False)
+vader_sentiment_df.to_csv('yfinance_vader_sentiment.csv', index=False)
 print('VADER sentiment analysis completed successfully.')

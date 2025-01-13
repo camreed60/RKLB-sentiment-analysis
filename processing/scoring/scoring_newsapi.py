@@ -39,7 +39,8 @@ finbert_sentiment_data = []
 # Process each row in the NewsAPI data
 for _, row in newsapi_df.iterrows():
     # Use cleaned content and title
-    text = f"{row['cleaned_title']} {row['cleaned_content']}".strip()
+    text = f"{row['cleaned_content']}".strip()
+    article_length = len(text)
 
     # Skip rows with missing or empty cleaned text
     if not text or pd.isnull(text):
@@ -58,7 +59,8 @@ for _, row in newsapi_df.iterrows():
         'compound': vader_scores['compound'],
         'positive': vader_scores['pos'],
         'neutral': vader_scores['neu'],
-        'negative': vader_scores['neg']
+        'negative': vader_scores['neg'],
+        'article_length': article_length
     })
 
     # FinBERT sentiment analysis
@@ -73,7 +75,8 @@ for _, row in newsapi_df.iterrows():
         'cleaned_content': row['cleaned_content'],
         'cleaned_engagement': row['cleaned_engagement'],
         'label': finbert_result['label'],
-        'score': finbert_result['score']
+        'score': finbert_result['score'],
+        'article_length': article_length
     })
 
 # Save VADER sentiment scores

@@ -42,8 +42,11 @@ for file_name in os.listdir(reddit_data_dir):
         # Apply sentiment analysis on each row
         for _, row in df.iterrows():
             # Use cleaned text directly and truncate if necessary
-            text = f"{row['cleaned_title']} {row['cleaned_selftext']}".strip()
+            text = f"{row['cleaned_selftext']}".strip()
             truncated_text = truncate_text(text, finbert_tokenizer)
+
+            # Calculate the length of the post (combined title and selftext)
+            post_length = len(text)
 
             # VADER sentiment analysis
             vader_scores = vader_analyzer.polarity_scores(text)
@@ -57,7 +60,8 @@ for file_name in os.listdir(reddit_data_dir):
                 'compound': vader_scores['compound'],
                 'positive': vader_scores['pos'],
                 'neutral': vader_scores['neu'],
-                'negative': vader_scores['neg']
+                'negative': vader_scores['neg'],
+                'Post_Length': post_length  # Add Post_Length column
             })
 
             # FinBERT sentiment analysis
@@ -70,7 +74,8 @@ for file_name in os.listdir(reddit_data_dir):
                 'num_comments': row['num_comments'],
                 'url': row['url'],
                 'label': finbert_result['label'],
-                'score': finbert_result['score']
+                'score': finbert_result['score'],
+                'Post_Length': post_length  # Add Post_Length column
             })
 
 # Save VADER sentiment scores
